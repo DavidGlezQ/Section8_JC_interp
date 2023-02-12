@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -20,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import com.cursosandroidant.formxml.databinding.ActivityMainBinding
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -91,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         Column {
             OutlinedTextField(value = textValue, onValueChange = {
                 textValue = it
-                isError = it.isEmpty()
+                isError = it.isEmpty() || it.toInt() < 50
                 onValueChanged(it)
             },
                 modifier = Modifier
@@ -99,9 +102,11 @@ class MainActivity : AppCompatActivity() {
                     .weight(40f)
                     .padding(top = dimensionResource(id = R.dimen.common_padding_min)),
                 label = { Text(text = stringResource(id = R.string.hint_height))},
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.ic_height), contentDescription = null)}
             )
-            Text(text = stringResource(id = R.string.help_min_height),
+            Text(text = if (isError) stringResource(id = R.string.help_min_height_valid)
+                else stringResource(id = R.string.help_min_height),
                 style = MaterialTheme.typography.caption,
                 color = if (isError) MaterialTheme.colors.error
                 else MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium),
@@ -126,6 +131,7 @@ class MainActivity : AppCompatActivity() {
                     .fillMaxWidth()
                     .padding(top = dimensionResource(id = R.dimen.common_padding_default)),
                 label = { Text(text = stringResource(id = R.string.hint_surname))},
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, capitalization = KeyboardCapitalization.Words),
                 leadingIcon = { Icon(painter = painterResource(id = R.drawable.ic_person), contentDescription = null)}
             )
             Text(text = stringResource(id = R.string.help_required), 
