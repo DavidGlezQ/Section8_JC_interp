@@ -8,7 +8,19 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatCheckedTextView
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.cursosandroidant.formxml.databinding.ActivityMainBinding
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
@@ -62,8 +74,35 @@ class MainActivity : AppCompatActivity() {
             
             picker.show(supportFragmentManager, picker.toString())
         }
+
+        binding.etSurname.setContent {
+            MdcTheme {
+                EtSurname()
+            }
+        }
     }
-    
+
+    @Composable
+    private fun EtSurname() {
+        var textValue by remember { mutableStateOf("") }
+        Column {
+            OutlinedTextField(value = textValue,
+                onValueChange = { textValue = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = dimensionResource(id = R.dimen.common_padding_default)),
+                label = { Text(text = stringResource(id = R.string.hint_surname))},
+                leadingIcon = { Icon(painter = painterResource(id = R.drawable.ic_person), contentDescription = null) }
+            )
+            Text(text = stringResource(id = R.string.help_required), 
+                style = MaterialTheme.typography.caption,
+                color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium), 
+                modifier = Modifier.padding(
+                    start = dimensionResource(id = R.dimen.common_padding_default),
+                    top = dimensionResource(id = R.dimen.common_padding_micro)))
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
@@ -73,7 +112,7 @@ class MainActivity : AppCompatActivity() {
         if (item.itemId == R.id.action_send){
             if (validFields()) {
                 val name: String = findViewById<TextInputEditText>(R.id.etName).text.toString().trim()
-                val surname = binding.etSurname.text.toString().trim()
+                //val surname = binding.etSurname.text.toString().trim()
                 val height = binding.etHeight.text.toString().trim()
                 val dateBirth = binding.etDateBirth.text.toString().trim()
                 val country = binding.actvCountries.text.toString().trim()
@@ -82,11 +121,11 @@ class MainActivity : AppCompatActivity() {
                 
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
                 builder.setTitle(getString(R.string.dialog_title))
-                builder.setMessage(joinData(name, surname, height, dateBirth, country, placeBirth, notes))
+                builder.setMessage(joinData(name, "surname", height, dateBirth, country, placeBirth, notes))
                 builder.setPositiveButton(getString(R.string.dialog_ok)) { _, _ ->
                     with(binding) {
                         etName.text?.clear()
-                        etSurname.text?.clear()
+                        //etSurname.text?.clear()
                         etHeight.text?.clear()
                         etDateBirth.text?.clear()
                         actvCountries.text?.clear()
@@ -135,7 +174,7 @@ class MainActivity : AppCompatActivity() {
             binding.tilHeight.error = null
         }
         
-        if (binding.etSurname.text.isNullOrEmpty()){
+        /*if (binding.etSurname.text.isNullOrEmpty()){
             binding.tilSurname.run {
                 error = getString(R.string.help_required)
                 requestFocus()
@@ -143,7 +182,7 @@ class MainActivity : AppCompatActivity() {
             isValid = false
         } else {
             binding.tilSurname.error = null
-        }
+        }*/
         
         if (binding.etName.text.isNullOrEmpty()){
             binding.tilName.run {
